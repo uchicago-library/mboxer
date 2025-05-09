@@ -21,6 +21,7 @@ depends: [
   "utop"
   "ocp-index"
   "merlin"
+  "cmdliner"
   "odoc" {with-doc}
 ]
 build: [

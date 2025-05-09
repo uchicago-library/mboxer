@@ -1,6 +1,6 @@
 (test
  (name test_mboxer)
- (libraries lib))
+ (libraries mboxer))
 
 (env
  (dev

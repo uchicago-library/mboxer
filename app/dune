@@ -1,8 +1,8 @@
 (executable 
- (public_name mboxer) 
  (name mboxer)
+ (public_name mboxer) 
  (promote (until-clean))
- (libraries camlp-streams prelude etude lib)) 
+ (libraries prelude etude mboxer)) 
 
 (env
  (dev

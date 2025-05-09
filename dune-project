@@ -17,7 +17,8 @@
    etude
    utop
    ocp-index
-   merlin)
+   merlin
+   cmdliner)
  (source (github your-username/your-repo)))
 
 ; Local Variables:

@@ -1,6 +1,6 @@
 (library
- (name lib)
- (libraries prelude etude))
+ (name mboxer)
+ (libraries prelude etude cmdliner))
 
 (env
  (dev
