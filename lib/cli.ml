@@ -22,23 +22,43 @@ struct
 end
 
 module Arguments = struct
-  let dummy =
+  let mailbox_paths =
     let open Cmdliner.Arg in
     let doc =
-      "Dummy CLI argument for $(tname)."
+      "Filepaths to emails, to be converted into an MBOX."
     in
-    let docv = "D" in
-    let inf = info [ "d"; "dummy-mode" ] ~doc ~docv in
-    let arg_type = flag in
+    let docv = "FILEPATHS" in
+    let inf = info [] ~doc ~docv in
+    let arg_type = pos_all (some string) [] in
     value (arg_type inf)
 end
 
 module Subcommands = struct
-  module Get = struct
-    let cmnd = "dude"
-  end
   module Make = struct
-    let cmnd = "bro"
+    let make_term exe mailbox_paths =
+      let open Term in
+      let+ make = pure exe
+      in make mailbox_paths
+    let manpage_info =
+      let description =
+        "$(tname) creates an MBOX out of the emails provided on the \
+         command line"
+      in
+      let man =
+        Cmdliner.[ `S Manpage.s_description; `P description ]
+      in
+      let doc = "Creates a fresh MBOX." in
+      Cmdliner.Cmd.info "make" ~doc ~man
+    let command exe mailbox_paths =
+      let open Cmdliner.Cmd in
+      let term = make_term exe mailbox_paths in
+      v manpage_info term
   end
-  let subcommands = [ Get.cmnd ; Make.cmnd ]
+  let subcommands make_exe mailbox_paths = [
+      Make.command make_exe mailbox_paths ;
+    ]
 end
+
+(* $ mboxer get --message-id="XXX" rat.mbox *)
+(* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
+
