@@ -60,7 +60,7 @@ module Subcommands = struct
 end
 
 module Executable = struct
-  let real_exe paths = List.iter print_endline paths
+  let real_exe _ = ()
 
   let exe () =
     let open Cmdliner.Cmd in
