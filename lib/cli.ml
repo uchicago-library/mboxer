@@ -35,6 +35,7 @@ end
 
 module Subcommands = struct
   module Make = struct
+    (* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
     let make_term exe mailbox_paths =
       let open Term in
       let+ make = pure exe
@@ -54,8 +55,12 @@ module Subcommands = struct
       let term = make_term exe mailbox_paths in
       v manpage_info term
   end
+  module Get = struct
+    (* $ mboxer get --message-id="XXX" rat.mbox *)    
+  end
   let subcommands make_exe mailbox_paths = [
       Make.command make_exe mailbox_paths ;
+      (* TODO: insert Get.command here once I have it *)
     ]
 end
 
@@ -77,7 +82,3 @@ module Executable = struct
     |> eval
     |> exit
 end
-
-(* $ mboxer get --message-id="XXX" rat.mbox *)
-(* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
-
