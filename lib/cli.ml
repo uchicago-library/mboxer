@@ -42,7 +42,7 @@ module Subcommands = struct
     let manpage_info =
       let description =
         "$(tname) creates an MBOX out of the emails provided on the \
-         command line"
+         Command line"
       in
       let man =
         Cmdliner.[ `S Manpage.s_description; `P description ]
@@ -57,21 +57,25 @@ module Subcommands = struct
   let subcommands make_exe mailbox_paths = [
       Make.command make_exe mailbox_paths ;
     ]
-  (* let megacommand = *)
-  (*   let inf = info "mboxer" ~doc in *)
-  (*   Cmdliner.Cmd.group inf (subcommands) *)
 end
 
 module Executable = struct
+  let real_exe paths = List.iter print_endline paths
 
-  (* let exe = *)
-  (*   let open Cmdliner.Cmd in *)
-  (*   let open Term in *)
-  (*   let open Arguments in *)
-  (*   let open Subcommands in *)
-  (*   let doc = "$(tname) is a utility for manipulating MBOXes." in *)
-  (* let inf = info "mboxer" ~doc in *)
-  (*   group inf (subcommands make_term ) *)
+  let exe () =
+    let open Cmdliner.Cmd in
+    let doc =
+      "$(tname) is a utility for manipulating MBOXes."
+    in
+    let inf = info "mboxer" ~doc in
+    let term =
+      Subcommands.subcommands
+        real_exe
+        Arguments.mailbox_paths
+    in
+    group inf term
+    |> eval
+    |> exit
 end
 
 (* $ mboxer get --message-id="XXX" rat.mbox *)
