@@ -57,6 +57,21 @@ module Subcommands = struct
   let subcommands make_exe mailbox_paths = [
       Make.command make_exe mailbox_paths ;
     ]
+  (* let megacommand = *)
+  (*   let inf = info "mboxer" ~doc in *)
+  (*   Cmdliner.Cmd.group inf (subcommands) *)
+end
+
+module Executable = struct
+
+  (* let exe = *)
+  (*   let open Cmdliner.Cmd in *)
+  (*   let open Term in *)
+  (*   let open Arguments in *)
+  (*   let open Subcommands in *)
+  (*   let doc = "$(tname) is a utility for manipulating MBOXes." in *)
+  (* let inf = info "mboxer" ~doc in *)
+  (*   group inf (subcommands make_term ) *)
 end
 
 (* $ mboxer get --message-id="XXX" rat.mbox *)
