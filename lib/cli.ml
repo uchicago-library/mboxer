@@ -68,12 +68,12 @@ module Executable = struct
       "$(tname) is a utility for manipulating MBOXes."
     in
     let inf = info "mboxer" ~doc in
-    let term =
+    let termlist =
       Subcommands.subcommands
         real_exe
         Arguments.mailbox_paths
     in
-    group inf term
+    group inf termlist
     |> eval
     |> exit
 end
