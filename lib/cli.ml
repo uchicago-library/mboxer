@@ -25,60 +25,53 @@ module Arguments = struct
   let mailbox_paths =
     let open Cmdliner.Arg in
     let doc =
-      "Filepaths to emails, to be converted into an MBOX."
+      "Email filepaths, to be converted into an MBOX."
     in
     let docv = "FILEPATHS" in
     let inf = info [] ~doc ~docv in
-    let arg_type = pos_all (some string) [] in
+    let arg_type = pos_all string [] in
     value (arg_type inf)
 end
 
 module Subcommands = struct
   module Make = struct
     (* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
-    let make_term exe mailbox_paths =
+    let actual_exe = function
+      | [] -> print_endline "USAGE: mboxer make [FILEPATHS]"
+      | paths -> List.iter print_endline paths
+    let term =
       let open Term in
-      let+ make = pure exe
-      in make mailbox_paths
+      let+ args = Arguments.mailbox_paths
+      in actual_exe args
     let manpage_info =
       let description =
         "$(tname) creates an MBOX out of the emails provided on the \
-         Command line"
+         command line"
       in
       let man =
         Cmdliner.[ `S Manpage.s_description; `P description ]
       in
       let doc = "Creates a fresh MBOX." in
       Cmdliner.Cmd.info "make" ~doc ~man
-    let command exe mailbox_paths =
-      let open Cmdliner.Cmd in
-      let term = make_term exe mailbox_paths in
-      v manpage_info term
+    let command = Cmdliner.Cmd.v manpage_info term
   end
   module Get = struct
-    (* $ mboxer get --message-id="XXX" rat.mbox *)    
+    (* $ mboxer get --message-id="XXX" rat.mbox *)
   end
-  let subcommands make_exe mailbox_paths = [
-      Make.command make_exe mailbox_paths ;
-      (* TODO: insert Get.command here once I have it *)
+  let subcommands = [
+      Make.command ;
+      (* Get.command ; *)
     ]
 end
 
 module Executable = struct
-  let real_exe _ = ()
-
   let exe () =
     let open Cmdliner.Cmd in
     let doc =
       "$(tname) is a utility for manipulating MBOXes."
     in
     let inf = info "mboxer" ~doc in
-    let termlist =
-      Subcommands.subcommands
-        real_exe
-        Arguments.mailbox_paths
-    in
-    group inf termlist
+    group inf Subcommands.subcommands
     |> eval
     |> exit
 end
