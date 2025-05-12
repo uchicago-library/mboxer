@@ -33,20 +33,6 @@ module Arguments = struct
     value (arg_type inf)
 end
 
-(* experimental: the idea is to have a sum type that stores the all
-   the inputs to cmdliner boilerplate *)
-
-(* module Argument = struct *)
-(*   type t = *)
-(*     | Pos_all of string Cmdliner.Arg.conv * string list *)
-(* end *)
-
-(* let x = *)
-(*   let module R = struct *)
-(*       let y = 5 *)
-(*     end *)
-(*   in R.y *)
-
 module Subcommands = struct
   module Make = struct
     let make actual_exe = 
