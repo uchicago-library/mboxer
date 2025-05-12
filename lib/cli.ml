@@ -33,45 +33,57 @@ module Arguments = struct
     value (arg_type inf)
 end
 
+(* experimental: the idea is to have a sum type that stores the all
+   the inputs to cmdliner boilerplate *)
+
+(* module Argument = struct *)
+(*   type t = *)
+(*     | Pos_all of string Cmdliner.Arg.conv * string list *)
+(* end *)
+
+(* let x = *)
+(*   let module R = struct *)
+(*       let y = 5 *)
+(*     end *)
+(*   in R.y *)
+
 module Subcommands = struct
   module Make = struct
-    (* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
-    let actual_exe = function
-      | [] -> print_endline "USAGE: mboxer make [FILEPATHS]"
-      | paths -> List.iter print_endline paths
-    let term =
-      let open Term in
-      let+ args = Arguments.mailbox_paths
-      in actual_exe args
-    let manpage_info =
-      let description =
-        "$(tname) creates an MBOX out of the emails provided on the \
-         command line"
+    let make actual_exe = 
+      (* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
+      let term =
+        let open Term in
+        let+ args = Arguments.mailbox_paths
+        in actual_exe args
       in
-      let man =
-        Cmdliner.[ `S Manpage.s_description; `P description ]
+      let manpage_info =
+        let description =
+          "$(tname) creates an MBOX out of the emails provided on the \
+           command line"
+        in
+        let man =
+          Cmdliner.[ `S Manpage.s_description; `P description ]
+        in
+        let doc = "Creates a fresh MBOX." in
+        Cmdliner.Cmd.info "make" ~doc ~man
       in
-      let doc = "Creates a fresh MBOX." in
-      Cmdliner.Cmd.info "make" ~doc ~man
-    let command = Cmdliner.Cmd.v manpage_info term
+      Cmdliner.Cmd.v manpage_info term
   end
   module Get = struct
     (* $ mboxer get --message-id="XXX" rat.mbox *)
   end
-  let subcommands = [
-      Make.command ;
+  let subcommands ~make_exe = [
+      Make.make make_exe  ;
       (* Get.command ; *)
     ]
 end
 
-module Executable = struct
-  let exe () =
-    let open Cmdliner.Cmd in
-    let doc =
-      "$(tname) is a utility for manipulating MBOXes."
-    in
-    let inf = info "mboxer" ~doc in
-    group inf Subcommands.subcommands
-    |> eval
-    |> exit
-end
+let run_cli ~make_exe =
+  let open Cmdliner.Cmd in
+  let doc =
+    "$(tname) is a utility for manipulating MBOXes."
+  in
+  let inf = info "mboxer" ~doc in
+  group inf (Subcommands.subcommands ~make_exe)
+  |> eval
+  |> exit
