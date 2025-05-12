@@ -1,12 +1,13 @@
-(executable 
+(executable
  (name mboxer)
- (public_name mboxer) 
+ (public_name mboxer)
  (promote (until-clean))
- (libraries prelude etude mboxer)) 
+ (libraries prelude etude mboxer))
 
 (env
  (dev
-  (flags (:standard -warn-error -A))))
+  (flags
+   (:standard -warn-error -A))))
 
 ; Local Variables:
 ; mode: dune

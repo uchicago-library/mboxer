@@ -34,74 +34,81 @@ module Subcommands = struct
         let arg_type = pos_all file [] in
         non_empty (arg_type inf)
     end
-    let make actual_exe = 
+
+    let make actual_exe =
       (* $ mboxer make rat.eml giraffe.eml armadillo.eml *)
       let command_term =
         let open Term in
-        let+ args = Arguments.mailbox_paths
-        in actual_exe args
+        let+ args = Arguments.mailbox_paths in
+        actual_exe args
       in
       let manpage_info =
         let description =
-          "$(tname) creates an MBOX out of the emails provided on the \
-           command line"
+          "$(tname) creates an MBOX out of the emails \
+           provided on the command line"
         in
         let man =
-          Cmdliner.[ `S Manpage.s_description; `P description ]
+          Cmdliner.
+            [ `S Manpage.s_description; `P description ]
         in
         let doc = "Creates a fresh MBOX." in
         Cmdliner.Cmd.info "make" ~doc ~man
       in
       Cmdliner.Cmd.v manpage_info command_term
   end
+
   module Get = struct
+    (* $ mboxer get --message-id="XXX" rat.mbox *)
     module Arguments = struct
-      (* let message_id () = *)
-      (*   let open Cmdliner.Arg in *)
-        
+      let message_id =
+        let open Cmdliner.Arg in
+        let doc = "Message-ID to be searched for." in
+        let docv = "MESSAGE-ID" in
+        let inf = info [ "message-id" ] ~doc ~docv in
+        let arg_type = opt (some string) None in
+        required (arg_type inf)
+
       let mailbox_path =
         let open Cmdliner.Arg in
-        let doc =
-          "Filepath to the MBOX to be queried."
-        in
+        let doc = "Filepath to the MBOX to be queried." in
         let docv = "FILEPATH" in
         let inf = info [] ~doc ~docv in
         let arg_type = pos ~rev:true 0 (some file) None in
         required (arg_type inf)
     end
-    (* $ mboxer get --message-id="XXX" rat.mbox *)
-    (* let make actual_exe =  *)
-    (*   (\* $ mboxer make rat.eml giraffe.eml armadillo.eml *\) *)
-    (*   let command_term = *)
-    (*     let open Term in *)
-    (*     let+ args = Arguments.mailbox_paths *)
-    (*     in actual_exe args *)
-    (*   in *)
-    (*   let manpage_info = *)
-    (*     let description = *)
-    (*       "$(tname) creates an MBOX out of the emails provided on the \ *)
-    (*        command line" *)
-    (*     in *)
-    (*     let man = *)
-    (*       Cmdliner.[ `S Manpage.s_description; `P description ] *)
-    (*     in *)
-    (*     let doc = "Creates a fresh MBOX." in *)
-    (*     Cmdliner.Cmd.info "make" ~doc ~man *)
-    (*   in *)
-    (*   Cmdliner.Cmd.v manpage_info command_term *)
+
+    let make actual_exe =
+      let command_term =
+        let open Term in
+        let+ id = Arguments.message_id
+        and+ input_path = Arguments.mailbox_path in
+        actual_exe id input_path
+      in
+      let manpage_info =
+        let description =
+          "$(tname) looks up an individual email in an \
+           MBOX by message ID."
+        in
+        let man =
+          Cmdliner.
+            [ `S Manpage.s_description; `P description ]
+        in
+        let doc = "Gets an email by message ID." in
+        Cmdliner.Cmd.info "get" ~doc ~man
+      in
+      Cmdliner.Cmd.v manpage_info command_term
   end
-  let subcommands ~make_exe = [
-      Make.make make_exe  ;
-      (* Get.command ; *)
-    ]
+
+  let subcommands ~make_exe ~get_exe =
+    [ Make.make make_exe; Get.make get_exe ]
 end
 
-let run_cli ~make_exe =
+let run_cli ~make_exe ~get_exe =
   let open Cmdliner.Cmd in
   let doc =
     "$(tname) is a utility for manipulating MBOXes."
   in
   let inf = info "mboxer" ~doc in
-  group inf (Subcommands.subcommands ~make_exe)
+  group inf (Subcommands.subcommands ~make_exe ~get_exe)
   |> eval
   |> exit
