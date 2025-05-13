@@ -18,7 +18,8 @@
    utop
    ocp-index
    merlin
-   cmdliner)
+   cmdliner
+   mrmime)
  (source (github your-username/your-repo)))
 
 ; Local Variables:

@@ -1,6 +1,6 @@
 (library
  (name mboxer)
- (libraries prelude etude cmdliner))
+ (libraries prelude etude cmdliner mrmime))
 
 (env
  (dev
