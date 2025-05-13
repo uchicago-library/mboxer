@@ -16,7 +16,10 @@ end
 module type QUERY = sig
   include PARSETREE
 
-  val date : t -> string option
-  val from : t -> string option
-  val message_id : t -> string option
+  val date_v : t -> string option
+  val from_v : t -> string option
+  val to_v : t -> string option
+  val subject_v : t -> string option
+  val message_id_v : t -> string option
+  val attachment_count : t -> int
 end
