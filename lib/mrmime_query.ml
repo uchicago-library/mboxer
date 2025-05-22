@@ -28,6 +28,37 @@ let of_string_line_feed email_str =
 
 let header = fst
 
+module HeaderHelpers = struct
+  let poly_to_string encoder poly =
+    let str = Prettym.to_string encoder poly in
+    Some (Stdlib.String.trim str)
+
+  let lookup_mrmime_field_name name =
+    let lookup = [ ("date", Mrmime.Field_name.date) ] in
+    Stdlib.List.assoc_opt name lookup
+
+  let name_to_field_list mrmime_field_name parsetree =
+    let open Mrmime.Header in
+    assoc mrmime_field_name (header parsetree)
+
+  (* let unpack_field_list name = function *)
+  (*   | f :: _ -> field_to_string name f *)
+  (*   | _ -> None *)
+
+  (* let field_to_string name field = *)
+  (*   let open Mrmime.Field in *)
+  (*   match name, field with *)
+  (*   | "date", Field (_, Date, poly) -> *)
+  (*      poly_to_string Mrmime.Date.Encoder.date poly *)
+  (*   | _ -> assert false *)
+
+  let lookup_field_list name parsetree =
+    let open Etude.Option in
+    let+ encoder = lookup_mrmime_field_name name in
+    name_to_field_list encoder parsetree
+  (* assert false *)
+end
+
 let date parsetree =
   let open Mrmime.Header in
   let open Mrmime.Field in
@@ -35,9 +66,8 @@ let date parsetree =
   parsetree
   |> header
   |> assoc Mrmime.Field_name.date
-  |> List.hd
   |> function
-  | Field (_, Date, poly) ->
+  | Field (_, Date, poly) :: _ ->
     let str = Prettym.to_string date poly in
     Some (Stdlib.String.trim str)
   | _ -> None
@@ -49,9 +79,8 @@ let from parsetree =
   parsetree
   |> header
   |> assoc Mrmime.Field_name.from
-  |> List.hd
   |> function
-  | Field (_, Mailboxes, poly) ->
+  | Field (_, Mailboxes, poly) :: _ ->
     let str = Prettym.to_string mailboxes poly in
     Some (Stdlib.String.trim str)
   | _ -> None
@@ -59,13 +88,31 @@ let from parsetree =
 let to_ parsetree =
   let open Mrmime.Header in
   let open Mrmime.Field in
-  let open Mrmime.Unstructured.Encoder in
+  let open Mrmime.Address.Encoder in
   parsetree
   |> header
   |> assoc (Mrmime.Field_name.v "to")
-  |> List.hd
   |> function
-  | Field (_, Unstructured, poly) ->
+  | Field (_, Addresses, poly) :: _ ->
+    let str = Prettym.to_string addresses poly in
+    Some (Stdlib.String.trim str)
+  | _ -> None
+
+let subject parsetree =
+  let open Mrmime.Header in
+  let open Mrmime.Field in
+  let open Mrmime.Unstructured.Encoder in
+  parsetree
+  |> header
+  |> assoc (Mrmime.Field_name.v "subject")
+  |> function
+  | Field (_, Unstructured, poly) :: _ ->
     let str = Prettym.to_string unstructured poly in
     Some (Stdlib.String.trim str)
   | _ -> None
+
+(* let subject parsetree = *)
+(*   let to_ parsetree = *)
+(*   let open Mrmime.Header in *)
+(*   let open Mrmime.Field in *)
+(*   let open Mrmime.Address.Encoder in *)
