@@ -17,7 +17,7 @@ module type QUERY = sig
 
   val date : t -> string option
   val from : t -> string option
-  (* val to_ : t -> string option *)
+  val to_ : t -> string option
   (* val subject : t -> string option *)
   (* val message_id : t -> string option *)
   (* val attachment_count : t -> int *)

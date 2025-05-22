@@ -55,3 +55,17 @@ let from parsetree =
     let str = Prettym.to_string mailboxes poly in
     Some (Stdlib.String.trim str)
   | _ -> None
+
+let to_ parsetree =
+  let open Mrmime.Header in
+  let open Mrmime.Field in
+  let open Mrmime.Unstructured.Encoder in
+  parsetree
+  |> header
+  |> assoc (Mrmime.Field_name.v "to")
+  |> List.hd
+  |> function
+  | Field (_, Unstructured, poly) ->
+    let str = Prettym.to_string unstructured poly in
+    Some (Stdlib.String.trim str)
+  | _ -> None

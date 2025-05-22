@@ -22,6 +22,7 @@ depends: [
   "ocp-index"
   "merlin"
   "cmdliner"
+  "mrmime"
   "odoc" {with-doc}
 ]
 build: [
