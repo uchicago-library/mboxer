@@ -128,14 +128,19 @@ module Attachments = struct
   (* copied out of attc *)
   (* TODO: fix these *)
 
-  (* let is_attachment = *)
-  (*   header *)
-  (*   >> content_disposition *)
-  (*   >> Option.map *)
-  (*        ( Header.Field.Value.value *)
-  (*          >> String.lowercase_ascii *)
-  (*          >> fun x -> x = "attachment" || x = "inline" ) *)
-  (*   >> Option.default false *)
+  let is_attachment parsetree =
+    let open Etude.Option in
+    let* cont_disp =
+      parsetree |> header |> content_disposition
+    in
+    assert false
+  (* header *)
+  (* >> content_disposition *)
+  (* >> Option.map *)
+  (*      ( Header.Field.Value.value *)
+  (*        >> String.lowercase_ascii *)
+  (*        >> fun x -> x = "attachment" || x = "inline" ) *)
+  (* >> Option.default false *)
 
   (* let to_attachment tree = *)
   (*   let open Mrmime.Mail in *)

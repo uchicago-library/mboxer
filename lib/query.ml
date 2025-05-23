@@ -10,6 +10,23 @@ module type PARSETREE = sig
 
   val of_string_line_feed :
     string -> (t * Line_feed.t, error_stub) result
+
+  val filename : t -> string option
+
+  (* argument for parsing: we avoid overcounting MIME
+     multipart parts that look like this: *)
+
+  (* content-disposition: attachment *)
+  (* content-type: text/plain *)
+
+  (* content-disposition: attachment *)
+
+  (* or if you had an email with *)
+
+  (* content-disposition: attachment *)
+
+  (* in the body and it didn't even use MIME, that would
+     increment the count *)
 end
 
 module type QUERY = sig
