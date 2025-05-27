@@ -30,9 +30,6 @@ let header = fst
 
 module HeaderGet = struct
   module Structured = struct
-    (* we have to parse to get these, because if we grab
-       them with a regex, we are at risk of grabbing e.g.
-       "Date: xxx" from the body of an email *)
     let date parsetree =
       let open Mrmime.Header in
       let open Mrmime.Field in

@@ -1,0 +1,13 @@
+* Does =mboxer summary= need to parse to pull date/from/etc. headers?
++ Yes.
++ If we grabbed that info out using a regexp, the regexp would be
+  fooled by this situation, in which "Date: Thu, 14 Sep 2023 11:21:23
+  -0500" and "From: Bugs Bunny <bugs@bunny.org>" are in the body of an
+  email and are not functioning as headers:
+  #+begin_example
+    From: Daffy Duck <daffy@duck.org>
+    Date: Wed, 13 Sep 2023 11:23:09 -0500
+
+    From: Bugs Bunny <bugs@bunny.org>
+    Date: Thu, 14 Sep 2023 11:21:23 -0500
+  #+end_example
