@@ -11,7 +11,7 @@ module type PARSETREE = sig
   val of_string_line_feed :
     string -> (t * Line_feed.t, error_stub) result
 
-  val filename : t -> string option
+  (* val filename : t -> string option *)
 
   (* argument for parsing: we avoid overcounting MIME
      multipart parts that look like this: *)
