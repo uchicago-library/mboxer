@@ -39,5 +39,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/your-username/your-repo.git"
-url { src: "git+https://github.com/your-username/your-repo.git" }
+dev-repo: "git+https://github.com/uchicago-library/mboxer.git"
