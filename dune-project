@@ -20,7 +20,7 @@
    merlin
    cmdliner
    mrmime)
- (source (github your-username/your-repo)))
+ (source (github uchicago-library/mboxer)))
 
 ; Local Variables:
 ; mode: dune
